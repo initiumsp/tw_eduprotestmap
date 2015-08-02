@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Disco Election Map 2011</title>
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="twCounty2010.geo.js" charset="utf-8"></script>
+  <script src="fedData.js" charset="utf-8"></script>
+  <style>
+    #map { height: 900px; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+  var map = L.map('map').setView([23.03, 121.63], 8);
+  var shapes = [];
+
+  function _getStyle(feature) {
+    return {
+      "color": "black",
+      "weight": 1
+    }
+  }
+
+  function _onEachFeature(feature, layer){
+    var i, j;
+    layer.on('click', function (event) {
+      var countyName = feature.properties.COUNTYNAME;
+      console.log(countyName);
+
+      // Obtain a list of counties of the same group
+      var listOfCountyOfSameGroup = [];
+      for (i=0; i<fedData.length; i++) {
+        if (fedData[i].areas.indexOf(countyName) !== -1) {
+          listOfCountyOfSameGroup = fedData[i].areas;
+        }
+      }
+
+      // Highlight counties of the same protest group; de-highlight those that are not;
+      for (i=0; i<shapes.length; i+=1) {
+        var polygon = shapes[i];
+        if (listOfCountyOfSameGroup.indexOf(polygon.countyName) !== -1) {
+          polygon.setStyle({fillColor: '#999'});
+        } else {
+          polygon.setStyle({fillColor: 'black'})
+        }
+      }
+
+    });
+  }
+
+  for (var i=0;i<mapData.features.length;i++) {
+    var feature = mapData.features[i];
+    var shape = L.geoJson(feature, {
+      style: _getStyle(feature),
+      onEachFeature: _onEachFeature
+    });
+    shape.addTo(map);
+    shape.countyName = feature.properties.COUNTYNAME;
+    shapes.push(shape);
+  }
+</script>
+</body>
+</html>
