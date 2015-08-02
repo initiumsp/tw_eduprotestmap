@@ -27,7 +27,7 @@
 
   function _onEachFeature(feature, layer){
     var i, j;
-    layer.on('click', function (event) {
+    layer.on('mouseover', function (event) {
       var countyName = feature.properties.COUNTYNAME;
       console.log(countyName);
 
