@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Taiwan Map</title>
+  <style>
+    .initialText {
+      font-family: LiHei, sans-serif;
+      font-size: 25px;
+      color: #EEE;
+    }
+
+    #MapContent {
+      width: 850px;
+      height: 1200px;
+      position: relative;
+    }
+  </style>
 </head>
 <body>
+<div id="MapContent">
 <svg
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:cc="http://creativecommons.org/ns#"
@@ -550,78 +564,7 @@
     </g>
   </g>
 </svg>
-<script>
-  (function(){
-    var protestData = [
-      {counties: ['path2531', 'path3699', 'path3635'],
-        descriptions: []
-      },
-      {counties: ['path2707', 'path2726', 'path2732', 'path2781'],
-        descriptions: []
-      },
-      {counties: ['path2792', 'path2425', 'path2785', 'path2812'],
-        descriptions: []
-      },
-      {counties: ['path2907', 'path4308'],
-        descriptions: []
-      },
-      {counties: ['path3690', 'path2843', 'path2856'],
-        descriptions: []
-      },
-      {counties: ['path2905'],
-        descriptions: []
-      },
-      {counties: ['path3082'],
-        descriptions: []
-      },
-      {counties: ['path2861'],
-        descriptions: []
-      },
-    ];
-
-    var paths = document.getElementsByTagName("path"),
-        i;
-
-    function getSimilarGroup(pathID) {
-      var i;
-      for (i=0; i<protestData.length; i+=1) {
-        if (protestData[i].counties.indexOf(pathID) !== -1) {
-          return protestData[i].counties;
-        }
-      }
-      return null;
-    }
-
-    function getAllProtestedCounties() {
-      var result = [],
-          i;
-      for (i=0; i<protestData.length; i+=1) {
-        result = result.concat(protestData[i].counties)
-      }
-      return result;
-    }
-
-    for (i=0; i<paths.length; i++) {
-
-      paths[i].addEventListener('click', function(event){
-        var pathID = event.target.id,
-            countiesOfSameGroup = getSimilarGroup(pathID),
-            allProtestedCounties = getAllProtestedCounties(),
-            j,
-            path;
-
-        console.log(event.target.id);
-        for (j=0; j<paths.length; j+=1) {
-          path = paths[j];
-          if (countiesOfSameGroup.indexOf(path.id) !== -1) {
-            path.setAttribute("style", "fill: #27b2ca");
-          } else if (allProtestedCounties.indexOf(path.id) !== -1) {
-            path.setAttribute("style", "fill: #4d4d4d")
-          }
-        }
-      })
-    };
-  })();
-</script>
+</div>
+<script src="twmap.js"></script>
 </body>
 </html>
