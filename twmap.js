@@ -1,5 +1,6 @@
-var protestData = [
+/*jslint browser:true*/
 
+var protestData = [
   {counties: ['path2531', 'path3699', 'path3635'],
     descriptions: [
       {'title': '北區反課綱高校聯盟',
@@ -7,7 +8,7 @@ var protestData = [
       {'title': '北區高職聯盟',
         'items': ["南強工商", "南港高工", "松山農工", "新北高工", "北士商", "大安高工"]}
     ]
-  },
+    },
 
   {counties: ['path2707', 'path2726', 'path2732', 'path2781'],
     descriptions: [
@@ -18,9 +19,9 @@ var protestData = [
           "楊梅高中", "新竹高中", "竹北高中", "竹東高中", "成德高中", "建功高中", "關西高中", "義民中學",
           "新竹女中"
         ]
-      }
+        }
     ]
-  },
+    },
   {counties: ['path2792', 'path2425', 'path2785', 'path2812'],
     descriptions: [
       {'title': "中區高中生反黑箱課綱行動小組",
@@ -40,15 +41,15 @@ var protestData = [
         'items': [
           "嘉義高中", "華南高商", "興國高中", "嘉義女中", "協同中學", "嘉義高商", "竹崎高中", "東石高中", "新港藝高", "嘉義高工"
         ]
-      }
+        }
     ]
-  },
-  {counties: ['path3690', 'path2843', 'path2856'],
+    },
+  {counties: ['path3690', 'path2843', 'path2856', 'path2525', 'path2527'],
     descriptions: [
       {'title': '東區聯盟',
         'items': ["宜蘭高中", "宜蘭高商", "蘭陽女中", "羅東高中", "羅東高商", "花蓮高中", "花蓮高工", "花蓮女中", "台東女中"]}
     ]
-  },
+    },
   {counties: ['path2905'],
     descriptions: [
       {
@@ -59,7 +60,7 @@ var protestData = [
         ]
       }
     ]
-  },
+    },
   {counties: ['path3082'],
     descriptions: [
       {
@@ -71,7 +72,7 @@ var protestData = [
         ]
       }
     ]
-  },
+    },
   {counties: ['path2861'],
     descriptions: [
       {
@@ -79,7 +80,7 @@ var protestData = [
         'items': ["屏東高中", "屏榮高中", "屏東女中", "潮州高中", "美和高中", "東港高中", "屏北高中"]
       }
     ]
-  },
+    },
 ];
 
 var otherProtesters = {
@@ -88,12 +89,26 @@ var otherProtesters = {
     "自由學聲", "原住民族青年陣線"]
 };
 
-var paths = document.getElementsByTagName("path"),
+var allPaths = document.getElementsByTagName("path"),
     i;
 
+function getObjectLength(obj) {
+  "use strict";
+  var len = 0,
+      key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      len += 1;
+    }
+  }
+  return len;
+}
+
 function getSimilarGroup(pathID) {
+  // Return IDs of counties belonging to the same protest group of pathID
+  "use strict";
   var i;
-  for (i=0; i<protestData.length; i+=1) {
+  for (i = 0; i < protestData.length; i += 1) {
     if (protestData[i].counties.indexOf(pathID) !== -1) {
       return protestData[i].counties;
     }
@@ -102,6 +117,8 @@ function getSimilarGroup(pathID) {
 }
 
 function getAllProtestedCounties() {
+  // Return IDs of all counties which protested.
+  "use strict";
   var result = [],
       i;
   for (i=0; i<protestData.length; i+=1) {
@@ -111,8 +128,9 @@ function getAllProtestedCounties() {
 }
 
 function getDescriptions(pathID) {
+  "use strict";
   var i;
-  for (i=0; i<protestData.length; i+=1) {
+  for (i = 0; i < protestData.length; i += 1) {
     if (protestData[i].counties.indexOf(pathID) !== -1) {
       return protestData[i].descriptions;
     }
@@ -120,18 +138,18 @@ function getDescriptions(pathID) {
 }
 
 // Initialize color and text;
-(function(){
-
-  function getPaths (pathIDGroup) {
+(function initializeColor() {
+  "use strict";
+  function getPaths(pathIDGroup) {
     var result = [], i;
-    for (i=0; i<pathIDGroup.length; i+=1) {
+    for (i = 0; i < pathIDGroup.length; i += 1) {
       result.push(document.getElementById(pathIDGroup[i]));
-    };
+    }
     return result;
-  };
+  }
 
-  var i, j;
-  var pathGroup, color;
+  var i, j,
+      pathGroup, color;
 
   var initialColor = {
     //pathGroup: color
@@ -144,7 +162,8 @@ function getDescriptions(pathID) {
     '6': '#0b909e',
     '7': '#27b2ca'
   };
-  var initialColorCount = 8; //FIXME: this should be the length of initialColor
+
+  var initialColorCount = getObjectLength(initialColor);
 
   var initialText = {
     //pathGroup: [text, left, top]
@@ -157,39 +176,39 @@ function getDescriptions(pathID) {
     '6': ['高雄', '50%', '65%'],
     '7': ['屏東', '45%', '80%']
   };
-  var initialTextCount = 8; //FIXME: this should be the length of initialText
+  var initialTextCount = getObjectLength(initialText);
+  var textNode, div, mapContentDiv;
 
-  for (i=0; i<initialTextCount; i+=1) {
-    var textNode = document.createTextNode(initialText[i][0]);
-    var div = document.createElement('div');
+  for (i = 0; i < initialTextCount; i += 1) {
+    textNode = document.createTextNode(initialText[i][0]);
+    div = document.createElement('div');
     div.className = 'initialText';
     div.style.position = 'absolute';
     div.style.left = initialText[i][1];
     div.style.top = initialText[i][2];
     div.appendChild(textNode);
 
-    var mapContentDiv = document.getElementById('MapContent');
+    mapContentDiv = document.getElementById('MapContent');
     mapContentDiv.appendChild(div);
   };
 
-  for (i=0; i<initialColorCount; i+=1) {
+  for (i = 0; i < initialColorCount; i += 1) {
     color = initialColor[i.toString()];
     pathGroup = getPaths(protestData[i].counties);
-    for (j=0; j<pathGroup.length; j+=1) {
-      pathGroup[j].setAttribute("style", "fill: "+color)
-    };
+    for (j = 0; j < pathGroup.length; j += 1) {
+      pathGroup[j].setAttribute("style", "fill: " + color);
+    }
   }
 
-})();
+}());
 
-function handleAreaClick (event) {
+function handleAreaClick(event) {
   "use strict";
 
   var i, j;
-  var allInitialText = document.getElementsByClassName('initialText');
+  var allInitialTexts = document.getElementsByClassName('initialText');
   var pathID = event.target.id,
       countiesOfSameGroup = getSimilarGroup(pathID),
-      descriptions = getDescriptions(pathID),
       allProtestedCounties = getAllProtestedCounties(),
       path;
 
@@ -201,23 +220,23 @@ function handleAreaClick (event) {
   console.log(event.target.id);
 
   // Hide initial texts when one area is clicked
-  for (i=0; i<allInitialText.length; i+=1) {
-    allInitialText[i].style.display = "none";
+  for (i = 0; i < allInitialTexts.length; i += 1) {
+    allInitialTexts[i].style.display = "none";
   }
 
   // Coloring
-  for (j=0; j<paths.length; j+=1) {
-    path = paths[j];
+  for (j = 0; j < allPaths.length; j += 1) {
+    path = allPaths[j];
     if (countiesOfSameGroup.indexOf(path.id) !== -1) {
       path.setAttribute("style", "fill: #27b2ca");
     } else if (allProtestedCounties.indexOf(path.id) !== -1) {
-      path.setAttribute("style", "fill: #4d4d4d")
+      path.setAttribute("style", "fill: #4d4d4d");
     }
   }
-};
+}
 
 // Add clicking functionality
-for (i=0; i<paths.length; i++) {
-  paths[i].addEventListener('click', handleAreaClick, false);
+for (i = 0; i < allPaths.length; i += 1) {
+  allPaths[i].addEventListener('click', handleAreaClick, false);
 }
 
